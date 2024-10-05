@@ -14,41 +14,59 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     // Create person
-    public void createPerson(Person person) {
+    public String createPerson(Person person) {
         personRepository.save(person);
+        return "Welcome " + person.getFirstName() + " " + person.getLastName();
     }
 
-    public Person updatePerson(int id, Person person) {
+    // Update person
+    public String updatePerson(int id, PersonUpdateDTO updateDTO) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent()) {
-            Person personNow = optionalPerson.get();
+            Person personToUpdate = optionalPerson.get();
 
-            personNow.setFirstName(person.getFirstName());
-            personNow.setLastName(person.getLastName());
-            personNow.setEmail(person.getEmail());
-            personNow.setPhone(person.getPhone());
-            personNow.setAge(person.getAge());
+            personToUpdate.setFirstName(updateDTO.getFirstName());
+            personToUpdate.setLastName(updateDTO.getLastName());
+            personToUpdate.setEmail(updateDTO.getEmail());
+            personToUpdate.setPhone(updateDTO.getPhone());
+            personToUpdate.setAge(updateDTO.getAge());
 
-            // update the person
-            personNow.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+            personToUpdate.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
 
-            // push the changes to the database
-            return personRepository.save(personNow);
+            personRepository.save(personToUpdate);
 
+            return "Person updated successfully";
+
+        } else {
+            return "Person not found";
         }
-
-        return null;
     }
 
     // Get person by id
-    public Person getPersonById(int id) {
-        return personRepository.findById(id).orElse(null);
+    public String getPersonById(int id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+
+        if (optionalPerson.isPresent()) {
+            Person person = optionalPerson.get();
+            return "Person found: " + person.toString();
+        } else {
+            return "Person not found";
+        }
     }
 
     // Delete person by id
-    public void deletePersonById(int id) {
-        personRepository.deleteById(id);
+    public String deletePersonById(int id) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+
+        if (optionalPerson.isPresent()) {
+            Person person = optionalPerson.get();
+            personRepository.delete(person);
+            return "Person deleted successfully";
+        } else {
+            return "Person not found";
+        }
+
     }
 
 }

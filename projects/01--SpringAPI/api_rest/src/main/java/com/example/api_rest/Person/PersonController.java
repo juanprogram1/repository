@@ -1,6 +1,6 @@
-
 package com.example.api_rest.Person;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,36 +16,42 @@ public class PersonController {
     // Create person endpoint
     @PostMapping("/create")
     public String createPerson(@RequestBody Person person) {
-        personService.createPerson(person);
-        return "Welcome " + person.getFirstName() + " " + person.getLastName();
+        return personService.createPerson(person);
     }
 
     // Update person endpoint
-    @PatchMapping("/update/{id}")
-    public ResponseEntity<Person> updatePerson(
-            @PathVariable int id,
-            @RequestBody Person updateDTO) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<String> updatePerson(@PathVariable int id, @RequestBody PersonUpdateDTO updateDTO) {
+        String responseMessage = personService.updatePerson(id, updateDTO);
 
-        Person updatedPerson = personService.updatePerson(id, updateDTO);
-
-        if (updatedPerson == null) {
-            return ResponseEntity.notFound().build();
+        if (responseMessage.equals("Update successful")) {
+            return ResponseEntity.ok(responseMessage);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
         }
-
-        return ResponseEntity.ok(updatedPerson);
     }
 
     // Get person by id endpoint
     @GetMapping("/get/{id}")
-    public Person getPersonById(@PathVariable int id) {
-        return personService.getPersonById(id);
+    public ResponseEntity<String> getPersonById(@PathVariable int id) {
+        String person = personService.getPersonById(id);
+        if (person != null) {
+            return ResponseEntity.ok(person);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+
+        }
     }
 
     // Delete person endpoint
-    @PostMapping("/delete/{id}")
-    public String deletePerson(@PathVariable int id) {
-        personService.deletePersonById(id);
-        return "Person deleted successfully";
-    }
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deletePerson(@PathVariable int id) {
+        String responseMessage = personService.deletePersonById(id);
 
+        if (responseMessage != null) {
+            return ResponseEntity.ok(responseMessage);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+        }
+    }
 }
