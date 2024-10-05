@@ -1,6 +1,7 @@
 package com.example.api_rest.Person;
 
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
@@ -17,13 +18,37 @@ public class PersonService {
         personRepository.save(person);
     }
 
-    // filter by email
-    public Person findPersonByEmail(String email) {
-        return personRepository.findByEmail(email);
+    public Person updatePerson(int id, Person person) {
+        Optional<Person> optionalPerson = personRepository.findById(id);
+
+        if (optionalPerson.isPresent()) {
+            Person personNow = optionalPerson.get();
+
+            personNow.setFirstName(person.getFirstName());
+            personNow.setLastName(person.getLastName());
+            personNow.setEmail(person.getEmail());
+            personNow.setPhone(person.getPhone());
+            personNow.setAge(person.getAge());
+
+            // update the person
+            personNow.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+
+            // push the changes to the database
+            return personRepository.save(personNow);
+
+        }
+
+        return null;
     }
 
-    // filter by firstName
-    public List<Person> findPersonByFirstName(String firstName) {
-        return personRepository.findByFirstName(firstName);
+    // Get person by id
+    public Person getPersonById(int id) {
+        return personRepository.findById(id).orElse(null);
     }
+
+    // Delete person by id
+    public void deletePersonById(int id) {
+        personRepository.deleteById(id);
+    }
+
 }

@@ -1,18 +1,10 @@
 
 package com.example.api_rest.Person;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import java.util.List;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/api/person")
@@ -25,13 +17,35 @@ public class PersonController {
     @PostMapping("/create")
     public String createPerson(@RequestBody Person person) {
         personService.createPerson(person);
-        return "Person created successfully";
+        return "Welcome " + person.getFirstName() + " " + person.getLastName();
     }
 
-    // Find person by email endpoint
-    @GetMapping("/search")
-    public List<Person> findPersonByFirstName(@RequestParam String firstName) {
-        return personService.findPersonByFirstName(firstName);
+    // Update person endpoint
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<Person> updatePerson(
+            @PathVariable int id,
+            @RequestBody Person updateDTO) {
+
+        Person updatedPerson = personService.updatePerson(id, updateDTO);
+
+        if (updatedPerson == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedPerson);
+    }
+
+    // Get person by id endpoint
+    @GetMapping("/get/{id}")
+    public Person getPersonById(@PathVariable int id) {
+        return personService.getPersonById(id);
+    }
+
+    // Delete person endpoint
+    @PostMapping("/delete/{id}")
+    public String deletePerson(@PathVariable int id) {
+        personService.deletePersonById(id);
+        return "Person deleted successfully";
     }
 
 }
