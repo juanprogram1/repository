@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/person")
+@RequestMapping("/person")
 @RequiredArgsConstructor
 public class PersonController {
 
@@ -15,8 +15,9 @@ public class PersonController {
 
     // Create person endpoint
     @PostMapping("/create")
-    public String createPerson(@RequestBody Person person) {
-        return personService.createPerson(person);
+    public ResponseEntity<Person> createPerson(@RequestBody Person person) {
+        ResponseEntity.ok(personService.createPerson(person));
+        return ResponseEntity.ok(person);
     }
 
     // Update person endpoint
@@ -35,6 +36,8 @@ public class PersonController {
     @GetMapping("/get/{id}")
     public ResponseEntity<String> getPersonById(@PathVariable int id) {
         String person = personService.getPersonById(id);
+
+        System.out.println("Hola esta es la informacion de la persona" + person);
         if (person != null) {
             return ResponseEntity.ok(person);
         } else {

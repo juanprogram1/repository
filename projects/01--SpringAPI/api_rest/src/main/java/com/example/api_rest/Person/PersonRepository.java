@@ -9,8 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Integer> {
 
-    Person findByEmail(String email);
-
     List<Person> findByFirstName(String firstName);
 
 }

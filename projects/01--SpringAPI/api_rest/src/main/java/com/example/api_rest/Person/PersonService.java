@@ -14,9 +14,8 @@ public class PersonService {
     private final PersonRepository personRepository;
 
     // Create person
-    public String createPerson(Person person) {
-        personRepository.save(person);
-        return "Welcome " + person.getFirstName() + " " + person.getLastName();
+    public Person createPerson(Person person) {
+        return personRepository.save(person);
     }
 
     // Update person
@@ -39,7 +38,7 @@ public class PersonService {
             return "Person updated successfully";
 
         } else {
-            return "Person not found";
+            return null;
         }
     }
 
@@ -50,9 +49,8 @@ public class PersonService {
         if (optionalPerson.isPresent()) {
             Person person = optionalPerson.get();
             return "Person found: " + person.toString();
-        } else {
-            return "Person not found";
         }
+        return null;
     }
 
     // Delete person by id
@@ -64,9 +62,8 @@ public class PersonService {
             personRepository.delete(person);
             return "Person deleted successfully";
         } else {
-            return "Person not found";
+            return null;
         }
 
     }
-
 }
