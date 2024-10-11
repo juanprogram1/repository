@@ -1,6 +1,7 @@
 package com.example.api_rest.Person;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -43,14 +44,24 @@ public class PersonService {
     }
 
     // Get person by id
-    public String getPersonById(int id) {
+    public Person getPersonById(int id) {
         Optional<Person> optionalPerson = personRepository.findById(id);
 
         if (optionalPerson.isPresent()) {
-            Person person = optionalPerson.get();
-            return "Person found: " + person.toString();
+            return optionalPerson.get();
+
         }
         return null;
+    }
+
+    // Get all persons
+    public List<Person> getAllPersons() {
+        return personRepository.findAll();
+    }
+
+    // Get all persons by first name
+    public List<Person> getAllPersonsByFirstName(String firstName) {
+        return personRepository.findByFirstName(firstName);
     }
 
     // Delete person by id

@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -34,16 +36,27 @@ public class PersonController {
 
     // Get person by id endpoint
     @GetMapping("/get/{id}")
-    public ResponseEntity<String> getPersonById(@PathVariable int id) {
-        String person = personService.getPersonById(id);
+    public ResponseEntity<Person> getPersonById(@PathVariable int id) {
+        Person person = personService.getPersonById(id);
 
-        System.out.println("Hola esta es la informacion de la persona" + person);
         if (person != null) {
             return ResponseEntity.ok(person);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         }
+    }
+
+    // Get all persons endpoint
+    @GetMapping("/persons")
+    public ResponseEntity<List<Person>> getAllPersons() {
+        return ResponseEntity.ok(personService.getAllPersons());
+    }
+
+    // all persons by first name endpoint
+    @GetMapping("/persons/{firstName}")
+    public ResponseEntity<List<Person>> getAllPersonsByFirstName(@PathVariable String firstName) {
+        return ResponseEntity.ok(personService.getAllPersonsByFirstName(firstName));
     }
 
     // Delete person endpoint
