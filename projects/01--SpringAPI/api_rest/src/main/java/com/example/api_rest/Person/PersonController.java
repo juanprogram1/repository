@@ -15,7 +15,8 @@ public class PersonController {
 
     private final PersonService personService;
 
-    // Create person endpoint
+    // Create person endpoint}
+    // @RequestMapping(method = RequestMethod.POST, value = "/create")
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
         ResponseEntity.ok(personService.createPerson(person));
@@ -23,6 +24,7 @@ public class PersonController {
     }
 
     // Update person endpoint
+    // @RequestMapping(method = RequestMethod.PUT, value = "/update/{id}")
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updatePerson(@PathVariable int id, @RequestBody PersonUpdateDTO updateDTO) {
         String responseMessage = personService.updatePerson(id, updateDTO);
@@ -34,6 +36,7 @@ public class PersonController {
         }
     }
 
+    // @RequestMapping(method = RequestMethod.GET, value = "/get/{id}")
     // Get person by id endpoint
     @GetMapping("/get/{id}")
     public ResponseEntity<Person> getPersonById(@PathVariable int id) {
@@ -47,18 +50,21 @@ public class PersonController {
         }
     }
 
+    // @RequestMapping(method = RequestMethod.GET, value = "/persons")
     // Get all persons endpoint
     @GetMapping("/persons")
     public ResponseEntity<List<Person>> getAllPersons() {
         return ResponseEntity.ok(personService.getAllPersons());
     }
 
+    // @RequestMapping(method = RequestMethod.GET, value = "/persons/{firstName}")
     // all persons by first name endpoint
     @GetMapping("/persons/{firstName}")
     public ResponseEntity<List<Person>> getAllPersonsByFirstName(@PathVariable String firstName) {
         return ResponseEntity.ok(personService.getAllPersonsByFirstName(firstName));
     }
 
+    // @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     // Delete person endpoint
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deletePerson(@PathVariable int id) {
