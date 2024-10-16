@@ -60,20 +60,28 @@ public class PersonController {
     // @RequestMapping(method = RequestMethod.GET, value = "/persons/{firstName}")
     // all persons by first name endpoint
     @GetMapping("/persons/{firstName}")
-    public ResponseEntity<List<Person>> getAllPersonsByFirstName(@PathVariable String firstName) {
-        return ResponseEntity.ok(personService.getAllPersonsByFirstName(firstName));
+    public ResponseEntity<?> getAllPersonsByFirstName(@PathVariable String firstName) {
+
+        List<Person> persons = personService.findByFirstName(firstName);
+
+        if (persons.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No persons found with the first name: " + firstName);
+        } else {
+            return ResponseEntity.ok(persons);
+        }
     }
 
     // @RequestMapping(method = RequestMethod.DELETE, value = "/delete/{id}")
     // Delete person endpoint
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deletePerson(@PathVariable int id) {
+    public ResponseEntity<?> deletePerson(@PathVariable int id) {
         String responseMessage = personService.deletePersonById(id);
 
         if (responseMessage != null) {
             return ResponseEntity.ok(responseMessage);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person by id " + id + " not found");
         }
     }
 }

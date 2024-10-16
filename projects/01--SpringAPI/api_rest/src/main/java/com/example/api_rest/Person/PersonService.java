@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -60,8 +61,12 @@ public class PersonService {
     }
 
     // Get all persons by first name
-    public List<Person> getAllPersonsByFirstName(String firstName) {
-        return personRepository.findByFirstName(firstName);
+    public List<Person> findByFirstName(String firstName) {
+        if (firstName != null) {
+            return personRepository.findByFirstName(firstName);
+        } else {
+            throw new IllegalArgumentException("First name cannot be null");
+        }
     }
 
     // Delete person by id
@@ -71,7 +76,7 @@ public class PersonService {
         if (optionalPerson.isPresent()) {
             Person person = optionalPerson.get();
             personRepository.delete(person);
-            return "Person deleted successfully";
+            return "Person deleted " + id + " successfully";
         } else {
             return null;
         }
