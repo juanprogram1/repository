@@ -3,7 +3,9 @@ package com.example.api_rest.Person;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -19,20 +21,36 @@ public class PersonController {
     // @RequestMapping(method = RequestMethod.POST, value = "/create")
     @PostMapping("/create")
     public ResponseEntity<Person> createPerson(@RequestBody Person person) {
-        ResponseEntity.ok(personService.createPerson(person));
-        return ResponseEntity.ok(person);
+        personService.createPerson(person);
+
+        // URI to the newly created person
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{firstName}")
+                .buildAndExpand(person.getFirstName()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     // Update person endpoint
     // @RequestMapping(method = RequestMethod.PUT, value = "/update/{id}")
     @PutMapping("/update/{id}")
     public ResponseEntity<String> updatePerson(@PathVariable int id, @RequestBody PersonUpdateDTO updateDTO) {
-        String responseMessage = personService.updatePerson(id, updateDTO);
+        try {
+            if (!personService.existsById(id)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Person with ID: " + id + " not found.");
+            }
 
-        if (responseMessage.equals("Update successful")) {
-            return ResponseEntity.ok(responseMessage);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseMessage);
+            String response = personService.updatePerson(id, updateDTO);
+
+            if (response != null) {
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid input: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred: " + e.getMessage());
         }
     }
 
@@ -45,8 +63,7 @@ public class PersonController {
         if (person != null) {
             return ResponseEntity.ok(person);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-
+            return ResponseEntity.notFound().build();
         }
     }
 
