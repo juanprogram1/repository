@@ -1,5 +1,16 @@
-import { createRoot } from 'react-dom/client'
-import './index.css'
+import ReactDOM from "react-dom/client";
+// import React from "react";
+import { App } from "./App";
 
-createRoot(document.getElementById('root')!).render("hello world");
+import "./css/index.css";
 
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLDivElement
+);
+
+root.render(
+  <section className="App">
+    <App userName="Juan" age={30} nick="Popote" />
+    <App userName="Jose" age={20} nick="azulejo" />
+  </section>
+);
